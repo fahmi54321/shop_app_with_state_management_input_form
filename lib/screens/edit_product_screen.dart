@@ -14,8 +14,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
-  final _form = GlobalKey<FormState>(); // todo 4
-  var _editedProduct = Product( //todo 7
+  final _form = GlobalKey<FormState>();
+  var _editedProduct = Product(
     id: '',
     title: '',
     description: '',
@@ -38,14 +38,28 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _updateImageUrl() {
+  void _updateImageUrl() { //todo 7 (finish)
     if (!_imageUrlFocusNode.hasFocus) {
+      if (_imageUrlController.text.isEmpty ||
+          (!_imageUrlController.text.startsWith('http') &&
+              !_imageUrlController.text.startsWith('https')) ||
+          (!_imageUrlController.text.endsWith('.png') &&
+              !_imageUrlController.text.endsWith('jpg') &&
+              !_imageUrlController.text.endsWith('jpeg'))) {
+        return;
+      }
       setState(() {});
     }
   }
 
-  void _saveForm() { // todo 2
-    _form.currentState?.save(); //todo 6
+  void _saveForm() {
+    final isValid = _form.currentState?.validate(); //todo 1
+    if (!isValid!) {
+      //todo 2
+      return;
+    }
+
+    _form.currentState?.save();
 
     print(_editedProduct.title);
     print(_editedProduct.description);
@@ -58,7 +72,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Product'),
-        actions: [ //todo 1
+        actions: [
           IconButton(
             icon: Icon(Icons.save),
             onPressed: _saveForm,
@@ -68,7 +82,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _form, //todo 5
+          key: _form,
           child: ListView(
             children: [
               TextFormField(
@@ -77,7 +91,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
-                onSaved: (value) { //todo 8
+                onSaved: (value) {
                   _editedProduct = Product(
                     id: '',
                     title: value.toString(),
@@ -85,6 +99,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     imageUrl: _editedProduct.imageUrl,
                   );
+                },
+                validator: (value) {
+                  //todo 3
+                  if (value!.isEmpty) {
+                    return 'Please provide a value.';
+                  }
+                  return null;
                 },
               ),
               TextFormField(
@@ -95,7 +116,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
-                onSaved: (value) { // todo 9
+                onSaved: (value) {
                   _editedProduct = Product(
                     id: '',
                     title: _editedProduct.title,
@@ -104,13 +125,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     imageUrl: _editedProduct.imageUrl,
                   );
                 },
+                validator: (value) { //todo 4
+                  if (value!.isEmpty) {
+                    return 'Please enter a price';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+                  if (double.parse(value) <= 0) {
+                    return 'Please enter a number greater than zero';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Description'),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 focusNode: _descriptionFocusNode,
-                onSaved: (value) { //todo 10
+                onSaved: (value) {
                   _editedProduct = Product(
                     id: '',
                     title: _editedProduct.title,
@@ -118,6 +151,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     imageUrl: _editedProduct.imageUrl,
                   );
+                },
+                validator: (value) { //todo 5
+                  if (value!.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  if (value.length < 10) {
+                    return 'Should be at least 10 characters long.';
+                  }
+                  return null;
                 },
               ),
               Row(
@@ -153,10 +195,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
                       controller: _imageUrlController,
-                      onFieldSubmitted: (_) { // todo 3
+                      onFieldSubmitted: (_) {
                         _saveForm();
                       },
-                      onSaved: (value) { //todo 11 (finish)
+                      onSaved: (value) {
                         _editedProduct = Product(
                           id: '',
                           title: _editedProduct.title,
@@ -164,6 +206,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           price: _editedProduct.price,
                           imageUrl: value.toString(),
                         );
+                      },
+                      validator: (value) { //todo 6
+                        if (value!.isEmpty) {
+                          return 'Please enter a image URL';
+                        }
+                        if (!value.startsWith('http') &&
+                            !value.startsWith('https')) {
+                          return 'Please enter a valid URL';
+                        }
+                        if (!value.endsWith('.png') &&
+                            !value.endsWith('.jpg') &&
+                            !value.endsWith('.jpeg')) {
+                          return 'Please enter a valid image URL';
+                        }
+                        return null;
                       },
                     ),
                   ),
