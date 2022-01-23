@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app_with_state_management/providers/product.dart';
+import 'package:provider/provider.dart';
+import '../providers/product.dart';
 import '../providers/product_providers.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _updateImageUrl() { //todo 7 (finish)
+  void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
       if (_imageUrlController.text.isEmpty ||
           (!_imageUrlController.text.startsWith('http') &&
@@ -53,18 +54,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void _saveForm() {
-    final isValid = _form.currentState?.validate(); //todo 1
+    final isValid = _form.currentState?.validate();
     if (!isValid!) {
-      //todo 2
       return;
     }
 
     _form.currentState?.save();
+    Provider.of<ProductProvider>(context,listen: false).addProduct(_editedProduct); //todo 2
+    Navigator.of(context).pop(); //todo 3 (finish)
 
-    print(_editedProduct.title);
-    print(_editedProduct.description);
-    print(_editedProduct.price);
-    print(_editedProduct.imageUrl);
   }
 
   @override
@@ -101,7 +99,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   );
                 },
                 validator: (value) {
-                  //todo 3
                   if (value!.isEmpty) {
                     return 'Please provide a value.';
                   }
@@ -125,7 +122,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     imageUrl: _editedProduct.imageUrl,
                   );
                 },
-                validator: (value) { //todo 4
+                validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a price';
                   }
@@ -152,7 +149,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     imageUrl: _editedProduct.imageUrl,
                   );
                 },
-                validator: (value) { //todo 5
+                validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a description';
                   }
@@ -207,7 +204,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           imageUrl: value.toString(),
                         );
                       },
-                      validator: (value) { //todo 6
+                      validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter a image URL';
                         }
