@@ -5,7 +5,6 @@ import '../widget/user_product_item_widget.dart';
 import '../widget/app_drawer.dart';
 import '../screens/edit_product_screen.dart';
 
-//todo 1 (next user_product_item_widget)
 class UserProductScreen extends StatelessWidget {
 
   static const routeName = '/user-products';
@@ -21,7 +20,7 @@ class UserProductScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              Navigator.of(context).pushNamed(EditProductScreen.routeName);
+              Navigator.of(context).pushNamed(EditProductScreen.routeName); // todo 3 (finish)
             },
           ),
         ],
