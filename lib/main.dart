@@ -7,6 +7,7 @@ import './providers/product_providers.dart';
 import './providers/cart_providers.dart';
 import './providers/order_providers.dart';
 import './screens/orders_screen.dart';
+import './screens/user_product_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: CartProvider(),
         ),
-        ChangeNotifierProvider.value( //todo 3 (finish)
+        ChangeNotifierProvider.value(
           value: OrderProvider(),
         ),
       ],
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
           ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrderScreen.routeName : (ctx) => OrderScreen(),
+          UserProductScreen.routeName : (ctx) => UserProductScreen(), //todo 3 (next app_drawer)
         },
       ),
     );
