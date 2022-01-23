@@ -19,7 +19,8 @@ class CartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible( //todo 1 (next cart_providers)
+    return Dismissible(
+      //todo 1 (next cart_providers)
       key: ValueKey(id),
       background: Container(
         color: Theme.of(context).errorColor,
