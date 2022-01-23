@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app_with_state_management/providers/product.dart';
+import '../providers/product_providers.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -12,8 +14,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
+  final _form = GlobalKey<FormState>(); // todo 4
+  var _editedProduct = Product( //todo 7
+    id: '',
+    title: '',
+    description: '',
+    price: 0,
+    imageUrl: '',
+  );
 
-  void initState(){
+  void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
     super.initState();
   }
@@ -28,12 +38,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _updateImageUrl(){
-    if(!_imageUrlFocusNode.hasFocus){
-      setState(() {
-
-      });
+  void _updateImageUrl() {
+    if (!_imageUrlFocusNode.hasFocus) {
+      setState(() {});
     }
+  }
+
+  void _saveForm() { // todo 2
+    _form.currentState?.save(); //todo 6
+
+    print(_editedProduct.title);
+    print(_editedProduct.description);
+    print(_editedProduct.price);
+    print(_editedProduct.imageUrl);
   }
 
   @override
@@ -41,10 +58,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Product'),
+        actions: [ //todo 1
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _saveForm,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
+          key: _form, //todo 5
           child: ListView(
             children: [
               TextFormField(
@@ -52,6 +76,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
+                },
+                onSaved: (value) { //todo 8
+                  _editedProduct = Product(
+                    id: '',
+                    title: value.toString(),
+                    description: _editedProduct.description,
+                    price: _editedProduct.price,
+                    imageUrl: _editedProduct.imageUrl,
+                  );
                 },
               ),
               TextFormField(
@@ -62,12 +95,30 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
+                onSaved: (value) { // todo 9
+                  _editedProduct = Product(
+                    id: '',
+                    title: _editedProduct.title,
+                    description: _editedProduct.description,
+                    price: double.parse(value.toString()),
+                    imageUrl: _editedProduct.imageUrl,
+                  );
+                },
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Description'),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 focusNode: _descriptionFocusNode,
+                onSaved: (value) { //todo 10
+                  _editedProduct = Product(
+                    id: '',
+                    title: _editedProduct.title,
+                    description: value.toString(),
+                    price: _editedProduct.price,
+                    imageUrl: _editedProduct.imageUrl,
+                  );
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -102,6 +153,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
                       controller: _imageUrlController,
+                      onFieldSubmitted: (_) { // todo 3
+                        _saveForm();
+                      },
+                      onSaved: (value) { //todo 11 (finish)
+                        _editedProduct = Product(
+                          id: '',
+                          title: _editedProduct.title,
+                          description: _editedProduct.description,
+                          price: _editedProduct.price,
+                          imageUrl: value.toString(),
+                        );
+                      },
                     ),
                   ),
                 ],
