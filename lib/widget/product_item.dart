@@ -14,8 +14,8 @@ class ProductItem extends StatefulWidget {
 class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context,listen: false);
-    final cart = Provider.of<CartProvider>(context,listen: false); // todo 8
+    final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<CartProvider>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(
@@ -42,7 +42,9 @@ class _ProductItemState extends State<ProductItem> {
           ),
           leading: IconButton(
             icon: Icon(
-              product.isFavorite == true ? Icons.favorite : Icons.favorite_border,
+              product.isFavorite == true
+                  ? Icons.favorite
+                  : Icons.favorite_border,
             ),
             onPressed: () {
               setState(() {
@@ -54,7 +56,32 @@ class _ProductItemState extends State<ProductItem> {
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              cart.addItem(product.id, product.price, product.title,); //todo 9 (next product_overview)
+              cart.addItem(
+                product.id,
+                product.price,
+                product.title,
+              );
+
+              //todo 1 (next cart_providers)
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Added item to cart!',
+                  ),
+                  duration: Duration(
+                    seconds: 2,
+                  ),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      cart.removeSingeItem(
+                        product.id,
+                      );
+                    },
+                  ),
+                ),
+              );
             },
             color: Theme.of(context).accentColor,
           ),

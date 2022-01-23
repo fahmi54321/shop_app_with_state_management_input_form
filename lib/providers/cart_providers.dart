@@ -24,11 +24,11 @@ class CartProvider with ChangeNotifier {
   }
 
   //count items
-  int get itemCount{
+  int get itemCount {
     return _items.length;
   }
 
-  double get totalAmount{
+  double get totalAmount {
     var total = 0.0;
     _items.forEach((key, value) {
       total += value.price * value.quantity;
@@ -46,14 +46,13 @@ class CartProvider with ChangeNotifier {
       // add item baru pada cart
       _items.update(
         productId,
-            (value) => CartItem(
+        (value) => CartItem(
           id: value.id,
           title: value.title,
           quantity: value.quantity + 1,
           price: value.price,
         ),
       );
-
     } else {
       _items.putIfAbsent(
           productId,
@@ -66,13 +65,34 @@ class CartProvider with ChangeNotifier {
     }
     notifyListeners();
   }
-  void removeItem(String productId){
+
+  void removeItem(String productId) {
     _items.remove(productId);
     notifyListeners();
   }
 
-  //todo 2 (next main)
-  void clear(){
+  //todo 2 (finish)
+  removeSingeItem(String productId) {
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+    if (_items[productId]!.quantity > 1) {
+      _items.update(
+        productId,
+        (value) => CartItem(
+          id: value.id,
+          title: value.title,
+          quantity: value.quantity - 1,
+          price: value.price,
+        ),
+      );
+    }else{
+      _items.remove(productId);
+    }
+    notifyListeners();
+  }
+
+  void clear() {
     _items = {};
     notifyListeners();
   }
