@@ -5,7 +5,6 @@ import '../widget/user_product_item_widget.dart';
 import '../widget/app_drawer.dart';
 import '../screens/edit_product_screen.dart';
 
-//todo 1 (next user_product_item_widget)
 class UserProductScreen extends StatelessWidget {
 
   static const routeName = '/user-products';
@@ -33,6 +32,7 @@ class UserProductScreen extends StatelessWidget {
           itemBuilder: (_, i) => Column(
             children: [
               UserProductItem(
+                productData.items[i].id, //todo 4 (next edit_product_screen)
                 productData.items[i].title,
                 productData.items[i].imageUrl,
               ),

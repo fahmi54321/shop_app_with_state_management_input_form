@@ -49,7 +49,6 @@ class ProductProvider with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  //todo 1 (next edit_product_screen)
   void addProduct(Product product) {
     final newProduct = Product(
       id: DateTime.now().toString(),
@@ -60,5 +59,15 @@ class ProductProvider with ChangeNotifier {
     );
     _items.add(newProduct);
     notifyListeners();
+  }
+
+  void updateProduct(String id,Product newProduct){
+    final prodIndex = _items.indexWhere((element) => element.id == id);
+    if(prodIndex >= 0){
+      _items[prodIndex] = newProduct;
+      notifyListeners();
+    }else{
+
+    }
   }
 }
