@@ -98,8 +98,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     _form.currentState?.save();
 
+    print('id : ${_editedProduct.id}');
+
     //todo 12
-    if (_editedProduct.id != null) {
+    if (_editedProduct.id.isNotEmpty) {
       print('has id');
       Provider.of<ProductProvider>(
         context,
